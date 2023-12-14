@@ -36,7 +36,7 @@ class Mailbox
             return false;
             
 
-        } elseif (IMAP2_RETROFIT_MODE && is_resource($imap) && get_resource_type($imap) == 'imap') {
+        } elseif (IMAP2_RETROFIT_MODE && ((is_resource($imap) && get_resource_type($imap) == 'imap') || (gettype($imap) == 'object' && $imap::class == 'IMAP\Connection') )) {
             return imap_check($imap);
         }
 
