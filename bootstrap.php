@@ -510,7 +510,7 @@ if (!function_exists('imap_getmailboxes')) {
 if (!function_exists('imap2_getmailboxes')) {
     function imap2_getmailboxes($imap, $reference, $pattern)
     {
-        if (IMAP2_RETROFIT_MODE && is_resource($imap) && get_resource_type($imap) == 'imap') {
+        if (IMAP2_RETROFIT_MODE && ((is_resource($imap) && get_resource_type($imap) == 'imap') || (gettype($imap) == 'object' && $imap::class == 'IMAP\Connection') )) {
             return imap_getmailboxes($imap, $reference, $pattern);
         }
 
