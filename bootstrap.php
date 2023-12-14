@@ -855,7 +855,7 @@ if (!function_exists('imap2_headerinfo')) {
     function imap2_headerinfo($imap, $messageNum, $fromLength = 0, $subjectLength = 0, $defaultHost = null)
     {
         if (IMAP2_RETROFIT_MODE && ((is_resource($imap) && get_resource_type($imap) == 'imap') || (gettype($imap) == 'object' && $imap::class == 'IMAP\Connection') )) {
-            return imap_headerinfo($imap, $messageNum, $fromLength, $subjectLength, $defaultHost);
+            return imap_headerinfo($imap, $messageNum, $fromLength, $subjectLength);
         }
 
         return Message::headerInfo($imap, $messageNum, $fromLength, $subjectLength, $defaultHost);
