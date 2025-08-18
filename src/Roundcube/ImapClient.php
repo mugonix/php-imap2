@@ -372,6 +372,9 @@ class ImapClient
             }
             else if ($res == 'BAD') {
                 $this->errornum = self::ERROR_BAD;
+                if (preg_match('/Request is throttled\. Suggested Backoff Time: ([0-9]+) milliseconds/i', $str, $match)) {
+                        throw new \Javanile\Imap2\RequestThrottledException((int) $match[1], $str);
+                }
             }
             else if ($res == 'BYE') {
                 $this->closeSocket();
