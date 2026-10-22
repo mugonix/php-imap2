@@ -141,6 +141,34 @@ class MessageHeader
     public $bodystructure;
 
     /**
+     * IMAP envelope structure
+     *
+     * @var array
+     */
+    public $envelope;
+
+    /**
+     * IMAP message body
+     *
+     * @var string
+     */
+    public $body;
+
+    /**
+     * IMAP message body part
+     *
+     * @var string
+     */
+    public $bodypart;
+
+    /**
+     * IMAP modification sequence number
+     *
+     * @var int
+     */
+    public $modseq;
+
+    /**
      * IMAP internal date
      *
      * @var string
