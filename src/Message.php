@@ -182,7 +182,14 @@ class Message
         #$client->setDebug(true);
 
         $isUid = boolval($flags & FT_UID);
-        $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, ['BODY['.$section.']']);
+
+        $queryItems = ['BODY['.$section.']'];
+
+        if ($isUid) {
+            $queryItems[] = 'UID';
+        }
+
+        $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, $queryItems);
 
         if (empty($messages)) {
             trigger_error(Errors::badMessageNumber(debug_backtrace(), 1), E_USER_WARNING);
@@ -194,11 +201,17 @@ class Message
             $messages = Functions::keyBy('uid', $messages);
         }
 
-        if ($section) {
-            return $messages[$messageNum]->bodypart[$section];
+        if (!isset($messages[$messageNum])) {
+            trigger_error(Errors::badMessageNumber(debug_backtrace(), 1), E_USER_WARNING);
+
+            return false;
         }
 
-        return $messages[$messageNum]->body;
+        if ($section) {
+            return $messages[$messageNum]->bodypart[$section] ?? '';
+        }
+
+        return $messages[$messageNum]->body ?? '';
     }
 
     public static function fetchMime($imap, $messageNum, $section, $flags = 0)
@@ -219,7 +232,14 @@ class Message
         $isUid = boolval($flags & FT_UID);
 
         $sectionKey = $section.'.MIME';
-        $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, ['BODY['.$sectionKey.']']);
+
+        $queryItems = ['BODY['.$sectionKey.']'];
+
+        if ($isUid) {
+            $queryItems[] = 'UID';
+        }
+
+        $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, $queryItems);
 
         if (empty($messages)) {
             return "";
