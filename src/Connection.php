@@ -76,9 +76,11 @@ class Connection
         $success = $connection->connect();
 
         if (empty($success)) {
+            // The reason is kept for imap2_last_error() and reported by
+            // returning false; ddeboer/imap raises AuthenticationFailedException
+            // from that. Not a warning, which a host that promotes warnings to
+            // exceptions (Laravel does) would raise from inside here instead.
             Errors::appendErrorCanNotOpen($mailbox, $connection->getLastError());
-
-            trigger_error(Errors::couldNotOpenStream($mailbox, debug_backtrace(), 1), E_USER_WARNING);
 
             return false;
         }
@@ -97,8 +99,8 @@ class Connection
         $success = $imap->connect();
 
         if (empty($success)) {
-            trigger_error('imap2_reopen(): Couldn\'t re-open stream', E_USER_WARNING);
-
+            // Reported by returning false; ddeboer/imap raises
+            // ReopenMailboxException from that, naming the mailbox.
             return false;
         }
 

@@ -192,8 +192,10 @@ class Message
         $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, $queryItems);
 
         if (empty($messages)) {
-            trigger_error(Errors::badMessageNumber(debug_backtrace(), 1), E_USER_WARNING);
-
+            // Reported by returning false, not by a warning: the caller in
+            // ddeboer/imap turns that into an ImapFetchbodyException, while a
+            // host that promotes warnings to exceptions (Laravel does) would
+            // make a missing message abort the whole mailbox sync.
             return false;
         }
 
@@ -219,8 +221,6 @@ class Message
         }
 
         if ($messageNum <= 0) {
-            trigger_error(Errors::badMessageNumber(debug_backtrace(), 1), E_USER_WARNING);
-
             return false;
         }
 
