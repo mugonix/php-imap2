@@ -198,14 +198,14 @@ class Functions
 
     public static function keyBy(string $name, array $list): array
     {
+        // Items without the key, or with one already taken, are skipped. That
+        // is handled here rather than reported, because a host that promotes
+        // warnings to exceptions (Laravel does) would otherwise turn a
+        // recoverable response into a fatal error.
         $keyBy = [];
-        foreach ($list as $item) {
-            if (!isset($item->$name)) {
-                trigger_error('keyBy: key "' . $name . '" not found!', E_USER_WARNING);
-                continue;
-            }
-            if (isset($keyBy[$item->$name])) {
-                trigger_error('keyBy: duplicate key "' . $name . '" = "' . $item->$name . '"', E_USER_WARNING);
+        foreach ($list as $key => $item) {
+            if (!isset($item->$name) || isset($keyBy[$item->$name])) {
+                $keyBy[$key] = $item;
                 continue;
             }
             $keyBy[$item->$name] = $item;

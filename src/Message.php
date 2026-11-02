@@ -202,8 +202,6 @@ class Message
         }
 
         if (!isset($messages[$messageNum])) {
-            trigger_error(Errors::badMessageNumber(debug_backtrace(), 1), E_USER_WARNING);
-
             return false;
         }
 
